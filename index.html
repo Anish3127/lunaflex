@@ -1,0 +1,1893 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Lunaflex — Luxury Dreams</title>
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,500;1,300;1,400&family=Montserrat:wght@200;300;400;500;600&display=swap" rel="stylesheet">
+<style>
+:root {
+  --bg: #080a0c;
+  --bg2: #0d1014;
+  --gold: #c9a96e;
+  --gold-light: #e8c98a;
+  --silver: #a8b4c0;
+  --silver-light: #d4dde6;
+  --pearl: #f0ede8;
+  --text: #c8c0b8;
+  --white: #ffffff;
+  --dark-navy: #111820;
+}
+
+*, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
+
+html { scroll-behavior: smooth; }
+
+body {
+  background: var(--bg);
+  color: var(--pearl);
+  font-family: 'Montserrat', sans-serif;
+  font-weight: 300;
+  overflow-x: hidden;
+  cursor: none;
+}
+
+/* ─── CUSTOM CURSOR ─── */
+#cursor-dot {
+  position: fixed; top: 0; left: 0; z-index: 9999;
+  width: 8px; height: 8px;
+  background: var(--gold);
+  border-radius: 50%;
+  pointer-events: none;
+  transform: translate(-50%, -50%);
+  transition: transform 0.1s;
+}
+#cursor-ring {
+  position: fixed; top: 0; left: 0; z-index: 9998;
+  width: 36px; height: 36px;
+  border: 1px solid rgba(201,169,110,0.5);
+  border-radius: 50%;
+  pointer-events: none;
+  transform: translate(-50%, -50%);
+  transition: transform 0.15s, width 0.3s, height 0.3s, border-color 0.3s;
+}
+body:hover #cursor-ring { border-color: rgba(201,169,110,0.8); }
+a:hover ~ #cursor-ring, button:hover ~ #cursor-ring {
+  width: 56px; height: 56px;
+}
+
+/* ─── PROGRESS BAR ─── */
+#progress-bar {
+  position: fixed; top: 0; left: 0; z-index: 200;
+  height: 1px;
+  background: linear-gradient(90deg, var(--gold), var(--gold-light));
+  width: 0%;
+  transition: width 0.1s;
+}
+
+/* ─── LOADING SCREEN ─── */
+#loader {
+  position: fixed; inset: 0; z-index: 1000;
+  background: var(--bg);
+  display: flex; flex-direction: column;
+  align-items: center; justify-content: center;
+  gap: 32px;
+}
+#loader .lunaflex-logo-text {
+  font-family: 'Cormorant Garamond', serif;
+  font-size: 48px;
+  font-weight: 300;
+  letter-spacing: 0.3em;
+  color: var(--pearl);
+}
+#loader .tagline {
+  font-size: 10px;
+  letter-spacing: 0.5em;
+  color: var(--gold);
+  text-transform: uppercase;
+}
+#loader-bar-track {
+  width: 200px; height: 1px;
+  background: rgba(201,169,110,0.15);
+  position: relative;
+}
+#loader-bar {
+  height: 100%;
+  background: var(--gold);
+  width: 0%;
+  transition: width 0.4s ease;
+}
+#loader-text {
+  font-size: 10px;
+  letter-spacing: 0.3em;
+  color: var(--silver);
+  text-transform: uppercase;
+}
+#loader.hidden {
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 0.8s ease 0.2s;
+}
+
+/* ─── NAVBAR ─── */
+nav {
+  position: fixed; top: 0; left: 0; right: 0; z-index: 500;
+  padding: 24px 60px;
+  display: flex; align-items: center; justify-content: space-between;
+  transition: background 0.5s, backdrop-filter 0.5s, padding 0.3s;
+}
+nav.scrolled {
+  background: rgba(8,10,12,0.85);
+  backdrop-filter: blur(20px);
+  padding: 16px 60px;
+  border-bottom: 1px solid rgba(201,169,110,0.1);
+}
+
+/* SVG Logo embedded */
+.nav-logo {
+  display: flex; align-items: center; gap: 12px;
+  text-decoration: none;
+}
+.nav-logo svg { height: 36px; width: auto; }
+.nav-logo-text {
+  display: flex; flex-direction: column;
+}
+.nav-logo-wordmark {
+  font-family: 'Cormorant Garamond', serif;
+  font-size: 22px;
+  font-weight: 400;
+  color: var(--pearl);
+  letter-spacing: 0.12em;
+}
+.nav-logo-sub {
+  font-size: 8px;
+  letter-spacing: 0.4em;
+  color: var(--gold);
+  text-transform: uppercase;
+}
+
+.nav-links {
+  display: flex; gap: 40px; list-style: none;
+}
+.nav-links a {
+  color: var(--silver-light);
+  text-decoration: none;
+  font-size: 11px;
+  letter-spacing: 0.25em;
+  text-transform: uppercase;
+  position: relative;
+  padding-bottom: 4px;
+  transition: color 0.3s;
+}
+.nav-links a::after {
+  content: '';
+  position: absolute; bottom: 0; left: 0;
+  width: 0; height: 1px;
+  background: var(--gold);
+  transition: width 0.3s;
+}
+.nav-links a:hover { color: var(--gold-light); }
+.nav-links a:hover::after { width: 100%; }
+
+.nav-cta {
+  background: transparent;
+  border: 1px solid var(--gold);
+  color: var(--gold);
+  padding: 10px 28px;
+  font-family: 'Montserrat', sans-serif;
+  font-size: 10px;
+  letter-spacing: 0.3em;
+  text-transform: uppercase;
+  cursor: none;
+  text-decoration: none;
+  transition: background 0.3s, color 0.3s;
+}
+.nav-cta:hover { background: var(--gold); color: var(--bg); }
+
+/* ─── HERO SCROLL SECTION ─── */
+#hero-section {
+  position: relative;
+  height: 600vh;
+}
+#hero-sticky {
+  position: sticky;
+  top: 0;
+  width: 100%;
+  height: 100vh;
+  overflow: hidden;
+}
+#hero-canvas {
+  position: absolute; inset: 0;
+  width: 100%; height: 100%;
+  display: block;
+}
+.hero-overlay {
+  position: absolute; inset: 0;
+  background: radial-gradient(ellipse at center, transparent 40%, rgba(8,10,12,0.6) 100%);
+  pointer-events: none;
+}
+.grain-overlay {
+  position: absolute; inset: 0;
+  opacity: 0.035;
+  pointer-events: none;
+  background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)' opacity='1'/%3E%3C/svg%3E");
+  background-size: 200px;
+}
+
+/* Hero Text Overlays */
+.hero-text-layer {
+  position: absolute; inset: 0;
+  display: flex; flex-direction: column;
+  align-items: center; justify-content: center;
+  pointer-events: none;
+  opacity: 0;
+  transition: opacity 0.6s ease;
+  text-align: center;
+  padding: 0 40px;
+}
+.hero-text-layer.visible { opacity: 1; }
+
+.hero-eyebrow {
+  font-size: 10px;
+  letter-spacing: 0.5em;
+  color: var(--gold);
+  text-transform: uppercase;
+  margin-bottom: 20px;
+}
+.hero-headline {
+  font-family: 'Cormorant Garamond', serif;
+  font-size: clamp(56px, 8vw, 110px);
+  font-weight: 300;
+  line-height: 0.95;
+  color: var(--pearl);
+  letter-spacing: -0.01em;
+}
+.hero-headline em {
+  font-style: italic;
+  color: var(--gold-light);
+}
+.hero-sub {
+  margin-top: 24px;
+  font-size: 13px;
+  letter-spacing: 0.2em;
+  color: var(--silver-light);
+  max-width: 500px;
+}
+.hero-scroll-hint {
+  position: absolute;
+  bottom: 48px;
+  left: 50%;
+  transform: translateX(-50%);
+  display: flex; flex-direction: column;
+  align-items: center; gap: 12px;
+}
+.scroll-line {
+  width: 1px; height: 60px;
+  background: linear-gradient(to bottom, transparent, var(--gold));
+  animation: scrollPulse 2s ease-in-out infinite;
+}
+@keyframes scrollPulse {
+  0%, 100% { opacity: 0.3; transform: scaleY(1); }
+  50% { opacity: 1; transform: scaleY(1.1); }
+}
+.scroll-label {
+  font-size: 9px;
+  letter-spacing: 0.4em;
+  color: var(--gold);
+  text-transform: uppercase;
+  animation: scrollPulse 2s ease-in-out infinite;
+}
+
+/* ─── CTA Layer ─── */
+.hero-cta-btn {
+  display: inline-block;
+  margin-top: 40px;
+  padding: 14px 48px;
+  border: 1px solid var(--gold);
+  color: var(--gold);
+  font-size: 11px;
+  letter-spacing: 0.3em;
+  text-transform: uppercase;
+  text-decoration: none;
+  pointer-events: all;
+  cursor: none;
+  transition: background 0.3s, color 0.3s;
+}
+.hero-cta-btn:hover { background: var(--gold); color: var(--bg); }
+
+/* ─── SECTIONS ─── */
+section {
+  position: relative;
+}
+.section-inner {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 0 60px;
+}
+
+/* ─── ABOUT SECTION ─── */
+#about {
+  background: var(--dark-navy);
+  padding: 160px 0;
+}
+.about-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 100px;
+  align-items: center;
+}
+.about-label {
+  font-size: 10px;
+  letter-spacing: 0.5em;
+  color: var(--gold);
+  text-transform: uppercase;
+  margin-bottom: 24px;
+}
+.about-headline {
+  font-family: 'Cormorant Garamond', serif;
+  font-size: 56px;
+  font-weight: 300;
+  line-height: 1.1;
+  color: var(--pearl);
+}
+.about-headline em { font-style: italic; color: var(--gold-light); }
+.about-body {
+  margin-top: 32px;
+  font-size: 14px;
+  line-height: 2;
+  color: var(--silver-light);
+  opacity: 0.85;
+}
+.about-stats {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 40px;
+  margin-top: 64px;
+  padding-top: 64px;
+  border-top: 1px solid rgba(201,169,110,0.15);
+}
+.stat-number {
+  font-family: 'Cormorant Garamond', serif;
+  font-size: 52px;
+  font-weight: 300;
+  color: var(--gold-light);
+  line-height: 1;
+}
+.stat-label {
+  font-size: 10px;
+  letter-spacing: 0.3em;
+  color: var(--silver);
+  text-transform: uppercase;
+  margin-top: 8px;
+}
+.about-right {
+  position: relative;
+}
+.about-img-frame {
+  width: 100%;
+  aspect-ratio: 3/4;
+  background: var(--bg2);
+  position: relative;
+  overflow: hidden;
+}
+.about-img-frame::before {
+  content: '';
+  position: absolute;
+  inset: -1px;
+  border: 1px solid rgba(201,169,110,0.2);
+  z-index: 1;
+  pointer-events: none;
+}
+.about-img-frame img {
+  width: 100%; height: 100%;
+  object-fit: cover;
+  opacity: 0.7;
+  filter: grayscale(30%) contrast(1.1);
+  transition: transform 0.8s ease, opacity 0.5s;
+}
+.about-img-frame:hover img { transform: scale(1.05); opacity: 0.85; }
+.about-corner {
+  position: absolute;
+  width: 60px; height: 60px;
+  border-color: var(--gold);
+  border-style: solid;
+  border-width: 0;
+}
+.about-corner.tl { top: -12px; left: -12px; border-top-width: 1px; border-left-width: 1px; }
+.about-corner.br { bottom: -12px; right: -12px; border-bottom-width: 1px; border-right-width: 1px; }
+
+/* ─── MATERIALS SECTION ─── */
+#materials {
+  background: var(--bg);
+  padding: 160px 0;
+}
+.materials-header {
+  text-align: center;
+  margin-bottom: 100px;
+}
+.section-label {
+  font-size: 10px;
+  letter-spacing: 0.5em;
+  color: var(--gold);
+  text-transform: uppercase;
+  margin-bottom: 20px;
+  display: block;
+}
+.section-headline {
+  font-family: 'Cormorant Garamond', serif;
+  font-size: 52px;
+  font-weight: 300;
+  color: var(--pearl);
+}
+.materials-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 1px;
+  background: rgba(201,169,110,0.08);
+}
+.material-card {
+  background: var(--bg);
+  padding: 60px 48px;
+  position: relative;
+  overflow: hidden;
+  transition: background 0.4s;
+}
+.material-card::before {
+  content: '';
+  position: absolute;
+  bottom: 0; left: 0;
+  width: 0; height: 1px;
+  background: var(--gold);
+  transition: width 0.5s;
+}
+.material-card:hover { background: rgba(201,169,110,0.03); }
+.material-card:hover::before { width: 100%; }
+.material-number {
+  font-family: 'Cormorant Garamond', serif;
+  font-size: 72px;
+  font-weight: 300;
+  color: rgba(201,169,110,0.08);
+  line-height: 1;
+  position: absolute;
+  top: 20px; right: 24px;
+}
+.material-icon {
+  font-size: 28px;
+  margin-bottom: 20px;
+}
+.material-name {
+  font-family: 'Cormorant Garamond', serif;
+  font-size: 28px;
+  font-weight: 400;
+  color: var(--pearl);
+  margin-bottom: 16px;
+}
+.material-desc {
+  font-size: 13px;
+  line-height: 1.9;
+  color: var(--silver);
+  opacity: 0.8;
+}
+
+/* ─── PRODUCTS SECTION ─── */
+#products {
+  background: var(--dark-navy);
+  padding: 160px 0;
+}
+.products-header {
+  text-align: center;
+  margin-bottom: 100px;
+}
+.product-feature {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 0;
+  margin-bottom: 160px;
+  align-items: stretch;
+}
+.product-feature:nth-child(even) { direction: rtl; }
+.product-feature:nth-child(even) > * { direction: ltr; }
+.product-feature:last-child { margin-bottom: 0; }
+
+.product-visual {
+  position: relative;
+  aspect-ratio: 4/3;
+  overflow: hidden;
+  background: var(--bg);
+}
+.product-visual-inner {
+  width: 100%; height: 100%;
+  display: flex; align-items: center; justify-content: center;
+  position: relative;
+}
+
+/* Animated mattress illustration */
+.mattress-3d {
+  position: relative;
+  width: 340px;
+  height: 220px;
+  transform-style: preserve-3d;
+  transform: perspective(800px) rotateX(20deg) rotateY(-12deg);
+  transition: transform 0.6s ease;
+}
+.product-visual:hover .mattress-3d {
+  transform: perspective(800px) rotateX(15deg) rotateY(-6deg);
+}
+
+/* Product layers */
+.layer {
+  position: absolute;
+  left: 0; right: 0;
+  border-radius: 4px;
+  box-shadow: 0 4px 20px rgba(0,0,0,0.4);
+}
+
+/* Royal */
+.royal-mattress .layer-top {
+  top: 0; height: 60px;
+  background: linear-gradient(180deg, #f0ede8 0%, #e0d8cc 100%);
+  border: 1px solid rgba(255,255,255,0.3);
+}
+.royal-mattress .layer-2 {
+  top: 58px; height: 12px;
+  background: linear-gradient(180deg, #c9a96e 0%, #a87d3e 100%);
+}
+.royal-mattress .layer-3 {
+  top: 68px; height: 12px;
+  background: linear-gradient(180deg, #d4c4a8 0%, #b8a888 100%);
+}
+.royal-mattress .layer-spring {
+  top: 78px; height: 80px;
+  background: repeating-linear-gradient(
+    90deg,
+    rgba(168,180,192,0.6) 0px,
+    rgba(168,180,192,0.6) 2px,
+    transparent 2px,
+    transparent 20px
+  );
+  border: 1px solid rgba(168,180,192,0.3);
+  background-color: rgba(30,40,50,0.8);
+}
+.royal-mattress .layer-bottom {
+  top: 156px; height: 40px;
+  background: linear-gradient(180deg, #1a2030 0%, #111820 100%);
+  border: 1px solid rgba(201,169,110,0.2);
+}
+
+/* Diamond */
+.diamond-mattress .layer-top {
+  top: 0; height: 70px;
+  background: linear-gradient(180deg, #ffffff 0%, #e8e8e8 100%);
+  border: 1px solid rgba(255,255,255,0.4);
+}
+.diamond-mattress .layer-silk {
+  top: 68px; height: 8px;
+  background: linear-gradient(180deg, #f0e8d4 0%, #d4c0a0 100%);
+}
+.diamond-mattress .layer-wool {
+  top: 74px; height: 10px;
+  background: #c8b89a;
+}
+.diamond-mattress .layer-spring {
+  top: 82px; height: 70px;
+  background-color: rgba(40,50,60,0.9);
+  background-image: repeating-linear-gradient(
+    90deg,
+    rgba(180,196,210,0.5) 0px,
+    rgba(180,196,210,0.5) 2px,
+    transparent 2px,
+    transparent 18px
+  );
+  border: 1px solid rgba(180,196,210,0.3);
+}
+.diamond-mattress .layer-bottom {
+  top: 150px; height: 40px;
+  background: linear-gradient(180deg, #222 0%, #111 100%);
+  border: 1px solid rgba(255,255,255,0.08);
+}
+
+/* Ottoman */
+.ottoman-mattress .layer-top {
+  top: 0; height: 80px;
+  background: linear-gradient(180deg, #fafafa 0%, #ebebeb 100%);
+  border: 1px solid rgba(255,255,255,0.5);
+}
+.ottoman-mattress .layer-horsehair {
+  top: 78px; height: 14px;
+  background: linear-gradient(180deg, #8b6914 0%, #6b4f10 100%);
+  opacity: 0.8;
+}
+.ottoman-mattress .layer-latex {
+  top: 90px; height: 12px;
+  background: linear-gradient(180deg, #c8d4a0 0%, #a8b480 100%);
+}
+.ottoman-mattress .layer-spring {
+  top: 100px; height: 70px;
+  background-color: rgba(20,25,30,0.95);
+  background-image: repeating-linear-gradient(
+    90deg,
+    rgba(160,180,200,0.6) 0px,
+    rgba(160,180,200,0.6) 2px,
+    transparent 2px,
+    transparent 16px
+  );
+}
+.ottoman-mattress .layer-bottom {
+  top: 168px; height: 32px;
+  background: linear-gradient(180deg, #181818 0%, #0a0a0a 100%);
+  border: 1px solid rgba(201,169,110,0.15);
+}
+
+/* side gradient on mattress */
+.mattress-side {
+  position: absolute;
+  left: -20px; top: 30px;
+  width: 20px; height: 190px;
+  background: linear-gradient(180deg, #888 0%, #444 100%);
+  transform: skewY(30deg) translateY(-30px);
+  border-left: 1px solid rgba(201,169,110,0.2);
+}
+
+.product-glow {
+  position: absolute;
+  width: 300px; height: 300px;
+  border-radius: 50%;
+  pointer-events: none;
+  opacity: 0.12;
+  filter: blur(60px);
+}
+.glow-royal { background: #4a6fa8; }
+.glow-diamond { background: #8888a8; }
+.glow-ottoman { background: #a87840; }
+
+/* Product Info */
+.product-info {
+  padding: 80px 80px;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  background: var(--bg);
+  position: relative;
+}
+.product-info::before {
+  content: '';
+  position: absolute;
+  top: 0; left: 0; bottom: 0;
+  width: 1px;
+  background: linear-gradient(to bottom, transparent, var(--gold), transparent);
+}
+.product-feature:nth-child(even) .product-info::before {
+  left: auto; right: 0;
+}
+.product-tier {
+  font-size: 9px;
+  letter-spacing: 0.6em;
+  color: var(--gold);
+  text-transform: uppercase;
+  margin-bottom: 16px;
+}
+.product-name {
+  font-family: 'Cormorant Garamond', serif;
+  font-size: 64px;
+  font-weight: 300;
+  color: var(--pearl);
+  line-height: 0.9;
+  margin-bottom: 8px;
+}
+.product-subtitle {
+  font-family: 'Cormorant Garamond', serif;
+  font-size: 18px;
+  font-style: italic;
+  color: var(--gold-light);
+  margin-bottom: 32px;
+}
+.product-desc {
+  font-size: 13px;
+  line-height: 2;
+  color: var(--silver-light);
+  opacity: 0.8;
+  margin-bottom: 40px;
+}
+.product-cert {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 8px 16px;
+  border: 1px solid rgba(201,169,110,0.2);
+  font-size: 10px;
+  letter-spacing: 0.2em;
+  color: var(--gold);
+  text-transform: uppercase;
+  margin-bottom: 32px;
+}
+.product-layers-list {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin-bottom: 40px;
+}
+.layer-tag {
+  padding: 5px 12px;
+  border: 1px solid rgba(168,180,192,0.2);
+  font-size: 10px;
+  letter-spacing: 0.15em;
+  color: var(--silver);
+  text-transform: uppercase;
+}
+.product-cta {
+  display: inline-flex;
+  align-items: center;
+  gap: 16px;
+  font-size: 11px;
+  letter-spacing: 0.3em;
+  color: var(--gold);
+  text-decoration: none;
+  text-transform: uppercase;
+  cursor: none;
+  transition: gap 0.3s;
+}
+.product-cta::after {
+  content: '→';
+  transition: transform 0.3s;
+}
+.product-cta:hover { gap: 24px; }
+.product-cta:hover::after { transform: translateX(6px); }
+
+/* ─── CRAFTSMANSHIP QUOTE ─── */
+#craftsmanship {
+  background: var(--bg);
+  padding: 200px 0;
+  text-align: center;
+  position: relative;
+  overflow: hidden;
+}
+#craftsmanship::before {
+  content: '"';
+  position: absolute;
+  top: -80px; left: 50%;
+  transform: translateX(-50%);
+  font-family: 'Cormorant Garamond', serif;
+  font-size: 500px;
+  color: rgba(201,169,110,0.03);
+  line-height: 1;
+  pointer-events: none;
+}
+.quote-text {
+  font-family: 'Cormorant Garamond', serif;
+  font-size: clamp(28px, 4vw, 52px);
+  font-weight: 300;
+  font-style: italic;
+  color: var(--pearl);
+  max-width: 900px;
+  margin: 0 auto;
+  line-height: 1.4;
+}
+.quote-attr {
+  margin-top: 32px;
+  font-size: 11px;
+  letter-spacing: 0.4em;
+  color: var(--gold);
+  text-transform: uppercase;
+}
+.made-in-italy {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 16px;
+  margin-top: 64px;
+}
+.italy-flag {
+  display: flex;
+  height: 20px;
+  width: 36px;
+  overflow: hidden;
+  border-radius: 2px;
+}
+.italy-flag span {
+  flex: 1;
+  display: block;
+}
+.italy-flag .green { background: #009246; }
+.italy-flag .white { background: #ffffff; }
+.italy-flag .red { background: #ce2b37; }
+.italy-label {
+  font-size: 10px;
+  letter-spacing: 0.5em;
+  color: var(--silver);
+  text-transform: uppercase;
+}
+
+/* ─── BLOG SECTION ─── */
+#blog {
+  background: var(--dark-navy);
+  padding: 160px 0;
+}
+.blog-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-end;
+  margin-bottom: 80px;
+}
+.blog-grid {
+  display: grid;
+  grid-template-columns: 2fr 1fr 1fr;
+  gap: 24px;
+}
+.blog-card {
+  position: relative;
+  overflow: hidden;
+  cursor: none;
+}
+.blog-card-img {
+  width: 100%;
+  aspect-ratio: 4/3;
+  background: var(--bg2);
+  position: relative;
+  overflow: hidden;
+}
+.blog-card-img-inner {
+  width: 100%; height: 100%;
+  transition: transform 0.6s ease;
+}
+.blog-card:hover .blog-card-img-inner { transform: scale(1.06); }
+.blog-card-img-inner.bg1 {
+  background: linear-gradient(135deg, #1a2840 0%, #0d1820 50%, #0a1520 100%);
+}
+.blog-card-img-inner.bg2 {
+  background: linear-gradient(135deg, #2a1a10 0%, #1a1008 100%);
+}
+.blog-card-img-inner.bg3 {
+  background: linear-gradient(135deg, #0a1a10 0%, #051008 100%);
+}
+/* Decorative pattern on blog card backgrounds */
+.blog-card-img-inner::after {
+  content: '';
+  position: absolute; inset: 0;
+  background-image: radial-gradient(circle at 50% 50%, rgba(201,169,110,0.08) 0%, transparent 70%);
+}
+.blog-cat {
+  position: absolute;
+  top: 20px; left: 20px;
+  font-size: 9px;
+  letter-spacing: 0.3em;
+  color: var(--gold);
+  text-transform: uppercase;
+  background: rgba(8,10,12,0.8);
+  padding: 6px 12px;
+}
+.blog-card-body { padding: 28px 0; }
+.blog-date {
+  font-size: 10px;
+  letter-spacing: 0.2em;
+  color: var(--silver);
+  text-transform: uppercase;
+  margin-bottom: 12px;
+}
+.blog-title {
+  font-family: 'Cormorant Garamond', serif;
+  font-size: 24px;
+  font-weight: 400;
+  color: var(--pearl);
+  line-height: 1.3;
+  margin-bottom: 12px;
+}
+.blog-card:first-child .blog-title { font-size: 32px; }
+.blog-excerpt {
+  font-size: 13px;
+  line-height: 1.8;
+  color: var(--silver);
+  opacity: 0.7;
+}
+.view-all-link {
+  font-size: 11px;
+  letter-spacing: 0.3em;
+  color: var(--gold);
+  text-transform: uppercase;
+  text-decoration: none;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  cursor: none;
+  transition: gap 0.3s;
+}
+.view-all-link:hover { gap: 20px; }
+
+/* ─── CONTACT SECTION ─── */
+#contact {
+  background: var(--bg);
+  padding: 160px 0;
+}
+.contact-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 120px;
+  align-items: start;
+}
+.contact-left .section-headline {
+  margin-bottom: 24px;
+}
+.contact-left p {
+  font-size: 14px;
+  line-height: 2;
+  color: var(--silver);
+  margin-bottom: 48px;
+}
+.contact-detail {
+  margin-bottom: 32px;
+}
+.contact-detail-label {
+  font-size: 9px;
+  letter-spacing: 0.4em;
+  color: var(--gold);
+  text-transform: uppercase;
+  margin-bottom: 8px;
+}
+.contact-detail-value {
+  font-size: 14px;
+  color: var(--pearl);
+  line-height: 1.6;
+}
+
+.contact-form {
+  display: flex;
+  flex-direction: column;
+  gap: 24px;
+}
+.form-field {
+  position: relative;
+}
+.form-field input,
+.form-field textarea,
+.form-field select {
+  width: 100%;
+  background: transparent;
+  border: none;
+  border-bottom: 1px solid rgba(201,169,110,0.2);
+  padding: 16px 0;
+  font-family: 'Montserrat', sans-serif;
+  font-size: 13px;
+  font-weight: 300;
+  color: var(--pearl);
+  outline: none;
+  transition: border-color 0.3s;
+  cursor: none;
+  letter-spacing: 0.05em;
+}
+.form-field select option { background: var(--bg); color: var(--pearl); }
+.form-field input:focus,
+.form-field textarea:focus,
+.form-field select:focus {
+  border-bottom-color: var(--gold);
+}
+.form-field label {
+  position: absolute;
+  top: 16px; left: 0;
+  font-size: 11px;
+  letter-spacing: 0.2em;
+  color: var(--silver);
+  text-transform: uppercase;
+  pointer-events: none;
+  transition: top 0.3s, font-size 0.3s, color 0.3s;
+}
+.form-field input:focus + label,
+.form-field input:not(:placeholder-shown) + label,
+.form-field textarea:focus + label,
+.form-field textarea:not(:placeholder-shown) + label {
+  top: -10px;
+  font-size: 9px;
+  color: var(--gold);
+}
+.form-field input::placeholder,
+.form-field textarea::placeholder { opacity: 0; }
+.form-field textarea { height: 100px; resize: none; }
+
+.submit-btn {
+  background: transparent;
+  border: 1px solid var(--gold);
+  color: var(--gold);
+  padding: 18px 48px;
+  font-family: 'Montserrat', sans-serif;
+  font-size: 11px;
+  letter-spacing: 0.4em;
+  text-transform: uppercase;
+  cursor: none;
+  align-self: flex-start;
+  margin-top: 16px;
+  transition: background 0.3s, color 0.3s;
+}
+.submit-btn:hover { background: var(--gold); color: var(--bg); }
+
+/* ─── FOOTER ─── */
+footer {
+  background: #040506;
+  padding: 80px 60px 40px;
+  border-top: 1px solid rgba(201,169,110,0.08);
+}
+.footer-grid {
+  display: grid;
+  grid-template-columns: 2fr 1fr 1fr 1fr;
+  gap: 80px;
+  max-width: 1200px;
+  margin: 0 auto 80px;
+}
+.footer-brand p {
+  font-size: 13px;
+  line-height: 2;
+  color: var(--silver);
+  margin-top: 24px;
+  opacity: 0.7;
+  max-width: 280px;
+}
+.footer-col-title {
+  font-size: 10px;
+  letter-spacing: 0.4em;
+  color: var(--gold);
+  text-transform: uppercase;
+  margin-bottom: 24px;
+}
+.footer-links {
+  list-style: none;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+.footer-links a {
+  font-size: 13px;
+  color: var(--silver);
+  text-decoration: none;
+  opacity: 0.7;
+  transition: opacity 0.3s, color 0.3s;
+  cursor: none;
+}
+.footer-links a:hover { opacity: 1; color: var(--gold-light); }
+.footer-bottom {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding-top: 40px;
+  border-top: 1px solid rgba(201,169,110,0.06);
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+.footer-bottom p {
+  font-size: 11px;
+  color: var(--silver);
+  opacity: 0.4;
+  letter-spacing: 0.1em;
+}
+.social-links {
+  display: flex;
+  gap: 24px;
+}
+.social-links a {
+  font-size: 11px;
+  letter-spacing: 0.2em;
+  color: var(--silver);
+  text-decoration: none;
+  opacity: 0.5;
+  transition: opacity 0.3s;
+  cursor: none;
+}
+.social-links a:hover { opacity: 1; color: var(--gold); }
+
+/* ─── SCROLL ANIMATIONS ─── */
+.reveal {
+  opacity: 0;
+  transform: translateY(40px);
+  transition: opacity 0.9s ease, transform 0.9s ease;
+}
+.reveal.visible {
+  opacity: 1;
+  transform: translateY(0);
+}
+.reveal-delay-1 { transition-delay: 0.1s; }
+.reveal-delay-2 { transition-delay: 0.2s; }
+.reveal-delay-3 { transition-delay: 0.3s; }
+.reveal-delay-4 { transition-delay: 0.4s; }
+
+/* ─── MOBILE NAV ─── */
+@media (max-width: 900px) {
+  nav { padding: 20px 24px; }
+  .nav-links { display: none; }
+  .about-grid, .contact-grid { grid-template-columns: 1fr; gap: 60px; }
+  .product-feature { grid-template-columns: 1fr; direction: ltr !important; }
+  .product-info { padding: 48px 32px; }
+  .product-info::before { display: none; }
+  .blog-grid { grid-template-columns: 1fr; }
+  .footer-grid { grid-template-columns: 1fr 1fr; gap: 40px; }
+  .materials-grid { grid-template-columns: 1fr; }
+  .section-inner { padding: 0 24px; }
+  .about-stats { grid-template-columns: 1fr; gap: 24px; }
+}
+</style>
+</head>
+<body>
+
+<!-- Cursor -->
+<div id="cursor-dot"></div>
+<div id="cursor-ring"></div>
+<div id="progress-bar"></div>
+
+<!-- Loader -->
+<div id="loader">
+  <div style="display:flex;align-items:center;gap:16px">
+    <!-- Inline SVG Logo -->
+    <svg width="48" height="48" viewBox="0 0 100 100" fill="none" xmlns="http://www.w3.org/2000/svg">
+      <circle cx="50" cy="50" r="48" stroke="#c9a96e" stroke-width="0.5" opacity="0.3"/>
+      <!-- Flower/mandala petals -->
+      <g opacity="0.9">
+        <ellipse cx="50" cy="24" rx="5" ry="12" fill="#c9a96e" opacity="0.7"/>
+        <ellipse cx="50" cy="24" rx="5" ry="12" fill="#c9a96e" opacity="0.7" transform="rotate(30 50 50)"/>
+        <ellipse cx="50" cy="24" rx="5" ry="12" fill="#c9a96e" opacity="0.7" transform="rotate(60 50 50)"/>
+        <ellipse cx="50" cy="24" rx="5" ry="12" fill="#c9a96e" opacity="0.7" transform="rotate(90 50 50)"/>
+        <ellipse cx="50" cy="24" rx="5" ry="12" fill="#c9a96e" opacity="0.7" transform="rotate(120 50 50)"/>
+        <ellipse cx="50" cy="24" rx="5" ry="12" fill="#c9a96e" opacity="0.7" transform="rotate(150 50 50)"/>
+        <ellipse cx="50" cy="24" rx="5" ry="12" fill="#c9a96e" opacity="0.7" transform="rotate(180 50 50)"/>
+        <ellipse cx="50" cy="24" rx="5" ry="12" fill="#c9a96e" opacity="0.7" transform="rotate(210 50 50)"/>
+        <ellipse cx="50" cy="24" rx="5" ry="12" fill="#c9a96e" opacity="0.7" transform="rotate(240 50 50)"/>
+        <ellipse cx="50" cy="24" rx="5" ry="12" fill="#c9a96e" opacity="0.7" transform="rotate(270 50 50)"/>
+        <ellipse cx="50" cy="24" rx="5" ry="12" fill="#c9a96e" opacity="0.7" transform="rotate(300 50 50)"/>
+        <ellipse cx="50" cy="24" rx="5" ry="12" fill="#c9a96e" opacity="0.7" transform="rotate(330 50 50)"/>
+      </g>
+      <circle cx="50" cy="50" r="10" fill="#c9a96e" opacity="0.9"/>
+    </svg>
+    <div class="nav-logo-text">
+      <span class="nav-logo-wordmark" style="font-size:36px;letter-spacing:0.2em">Lunaflex</span>
+      <span class="nav-logo-sub" style="font-size:9px;letter-spacing:0.6em">Luxury Dreams</span>
+    </div>
+  </div>
+  <div id="loader-bar-track"><div id="loader-bar"></div></div>
+  <div id="loader-text">Preparing your sleep experience...</div>
+</div>
+
+<!-- NAVIGATION -->
+<nav id="navbar">
+  <a href="#" class="nav-logo">
+    <svg width="36" height="36" viewBox="0 0 100 100" fill="none" xmlns="http://www.w3.org/2000/svg">
+      <g opacity="0.95">
+        <ellipse cx="50" cy="24" rx="5" ry="13" fill="#c9a96e" opacity="0.8"/>
+        <ellipse cx="50" cy="24" rx="5" ry="13" fill="#c9a96e" opacity="0.8" transform="rotate(30 50 50)"/>
+        <ellipse cx="50" cy="24" rx="5" ry="13" fill="#c9a96e" opacity="0.8" transform="rotate(60 50 50)"/>
+        <ellipse cx="50" cy="24" rx="5" ry="13" fill="#c9a96e" opacity="0.8" transform="rotate(90 50 50)"/>
+        <ellipse cx="50" cy="24" rx="5" ry="13" fill="#c9a96e" opacity="0.8" transform="rotate(120 50 50)"/>
+        <ellipse cx="50" cy="24" rx="5" ry="13" fill="#c9a96e" opacity="0.8" transform="rotate(150 50 50)"/>
+        <ellipse cx="50" cy="24" rx="5" ry="13" fill="#c9a96e" opacity="0.8" transform="rotate(180 50 50)"/>
+        <ellipse cx="50" cy="24" rx="5" ry="13" fill="#c9a96e" opacity="0.8" transform="rotate(210 50 50)"/>
+        <ellipse cx="50" cy="24" rx="5" ry="13" fill="#c9a96e" opacity="0.8" transform="rotate(240 50 50)"/>
+        <ellipse cx="50" cy="24" rx="5" ry="13" fill="#c9a96e" opacity="0.8" transform="rotate(270 50 50)"/>
+        <ellipse cx="50" cy="24" rx="5" ry="13" fill="#c9a96e" opacity="0.8" transform="rotate(300 50 50)"/>
+        <ellipse cx="50" cy="24" rx="5" ry="13" fill="#c9a96e" opacity="0.8" transform="rotate(330 50 50)"/>
+      </g>
+      <circle cx="50" cy="50" r="9" fill="#c9a96e"/>
+    </svg>
+    <div class="nav-logo-text">
+      <span class="nav-logo-wordmark">Lunaflex</span>
+      <span class="nav-logo-sub">Luxury Dreams</span>
+    </div>
+  </a>
+  <ul class="nav-links">
+    <li><a href="#hero-section">Home</a></li>
+    <li><a href="#about">About</a></li>
+    <li><a href="#products">Products</a></li>
+    <li><a href="#blog">Journal</a></li>
+    <li><a href="#contact">Contact</a></li>
+  </ul>
+  <a href="#contact" class="nav-cta">Book Consultation</a>
+</nav>
+
+<!-- HERO SCROLL ANIMATION -->
+<section id="hero-section">
+  <div id="hero-sticky">
+    <canvas id="hero-canvas"></canvas>
+    <div class="hero-overlay"></div>
+    <div class="grain-overlay"></div>
+
+    <!-- Text Layer 1: Intro 0-25% -->
+    <div class="hero-text-layer" id="layer-1">
+      <div class="hero-eyebrow">Made in Italy · Est. Venetian Atelier</div>
+      <h1 class="hero-headline">Luxury<br><em>Dreams</em></h1>
+      <p class="hero-sub">Where Italian craftsmanship meets the science of perfect sleep</p>
+    </div>
+
+    <!-- Text Layer 2: 28-55% -->
+    <div class="hero-text-layer" id="layer-2">
+      <div class="hero-eyebrow">Natural Materials · Zero Compromise</div>
+      <h1 class="hero-headline">Seven<br><em>Layers</em><br>Deep</h1>
+      <p class="hero-sub">Horsehair, natural latex, silk wadding — each layer chosen for your rest</p>
+    </div>
+
+    <!-- Text Layer 3: 58-80% -->
+    <div class="hero-text-layer" id="layer-3">
+      <div class="hero-eyebrow">Handcrafted · Biodegradable · Certified</div>
+      <h1 class="hero-headline">Nothing<br><em>Compromised</em></h1>
+      <p class="hero-sub">OEKOTEX and CERTIPUR certified. 100% natural materials, 100% biodegradable.</p>
+    </div>
+
+    <!-- Text Layer 4: CTA 83-100% -->
+    <div class="hero-text-layer" id="layer-4">
+      <div class="hero-eyebrow">Three Signature Collections</div>
+      <h1 class="hero-headline">Let The<br><em>Dream Begin</em></h1>
+      <a href="#products" class="hero-cta-btn">Explore Collections</a>
+    </div>
+
+    <!-- Scroll hint (visible at start) -->
+    <div class="hero-scroll-hint" id="scroll-hint">
+      <div class="scroll-line"></div>
+      <span class="scroll-label">Scroll</span>
+    </div>
+  </div>
+</section>
+
+<!-- ABOUT SECTION -->
+<section id="about">
+  <div class="section-inner">
+    <div class="about-grid">
+      <div class="about-left reveal">
+        <div class="about-label">Who We Are</div>
+        <h2 class="about-headline">Crafted for<br>those who<br>dream <em>deeply</em></h2>
+        <p class="about-body">
+          What we build is not only a luxury mattress. There is a lot in Lunaflex, but none of it is excessive. Every little detail has a function: to increase the condition for as deep a sleep as nature has intended for us human beings.<br><br>
+          By creating a natural sleeping environment, we bring you back to your roots. Lunaflex combines the latest scientific developments with the highest quality natural materials — giving a unique feeling of weightlessness found nowhere else.
+        </p>
+        <div class="about-stats">
+          <div class="reveal reveal-delay-1">
+            <div class="stat-number">100%</div>
+            <div class="stat-label">Natural Materials</div>
+          </div>
+          <div class="reveal reveal-delay-2">
+            <div class="stat-number">3</div>
+            <div class="stat-label">Signature Collections</div>
+          </div>
+          <div class="reveal reveal-delay-3">
+            <div class="stat-number">7</div>
+            <div class="stat-label">Comfort Zones</div>
+          </div>
+        </div>
+      </div>
+      <div class="about-right reveal reveal-delay-2">
+        <div class="about-img-frame">
+          <!-- Handmade craftsmanship visual using CSS art -->
+          <div style="width:100%;height:100%;background:linear-gradient(160deg,#1a1008 0%,#0d0804 60%,#050301 100%);display:flex;align-items:center;justify-content:center;position:relative;overflow:hidden;">
+            <!-- Thread pattern -->
+            <svg width="100%" height="100%" viewBox="0 0 400 600" preserveAspectRatio="xMidYMid slice" style="position:absolute;inset:0;opacity:0.12">
+              <defs>
+                <pattern id="thread" x="0" y="0" width="30" height="30" patternUnits="userSpaceOnUse">
+                  <path d="M0 15 Q7.5 0 15 15 Q22.5 30 30 15" stroke="#c9a96e" stroke-width="0.8" fill="none"/>
+                </pattern>
+              </defs>
+              <rect width="400" height="600" fill="url(#thread)"/>
+            </svg>
+            <div style="text-align:center;position:relative;z-index:1;padding:40px">
+              <div style="font-family:'Cormorant Garamond',serif;font-size:72px;color:rgba(201,169,110,0.15);line-height:1">手</div>
+              <div style="font-size:11px;letter-spacing:0.4em;color:var(--gold);text-transform:uppercase;margin-top:20px">Handmade</div>
+              <div style="font-size:13px;line-height:2;color:var(--silver);margin-top:16px;max-width:220px">Timeless craftsmanship &amp; innovative methods</div>
+              <!-- Italian flag bar -->
+              <div style="display:flex;gap:0;margin-top:32px;border-radius:2px;overflow:hidden;width:48px;margin-left:auto;margin-right:auto;height:4px">
+                <div style="flex:1;background:#009246"></div>
+                <div style="flex:1;background:#ffffff"></div>
+                <div style="flex:1;background:#ce2b37"></div>
+              </div>
+              <div style="font-size:9px;letter-spacing:0.4em;color:var(--silver);margin-top:8px;text-transform:uppercase">Made in Italy</div>
+            </div>
+          </div>
+        </div>
+        <div class="about-corner tl"></div>
+        <div class="about-corner br"></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- MATERIALS SECTION -->
+<section id="materials">
+  <div class="section-inner">
+    <div class="materials-header reveal">
+      <span class="section-label">The Ingredients of Excellence</span>
+      <h2 class="section-headline">Natural. Pure. Extraordinary.</h2>
+    </div>
+    <div class="materials-grid">
+      <div class="material-card reveal">
+        <span class="material-number">01</span>
+        <div class="material-icon">🐴</div>
+        <div class="material-name">Horsehair</div>
+        <p class="material-desc">When you choose a mattress with horsehair, you're getting exceptional time and skill invested — comfort, support, and the very best that nature has to offer.</p>
+      </div>
+      <div class="material-card reveal reveal-delay-1">
+        <span class="material-number">02</span>
+        <div class="material-icon">🌿</div>
+        <div class="material-name">Natural Latex</div>
+        <p class="material-desc">Gently conforms to your body's curves for optimal spinal alignment. Naturally hypoallergenic, antimicrobial, and resistant to mildew and mould.</p>
+      </div>
+      <div class="material-card reveal reveal-delay-2">
+        <span class="material-number">03</span>
+        <div class="material-icon">🪶</div>
+        <div class="material-name">Wool Wadding</div>
+        <p class="material-desc">Soft like a mother's touch — natural wool regulates temperature and moisture, creating the most tender and caring sleeping surface imaginable.</p>
+      </div>
+      <div class="material-card reveal reveal-delay-1">
+        <span class="material-number">04</span>
+        <div class="material-icon">🌾</div>
+        <div class="material-name">Vegan Options</div>
+        <p class="material-desc">Cotton, cocofiber, bamboo, linen, and hemp — Lunaflex offers fully vegan collections using only the finest plant-based materials.</p>
+      </div>
+      <div class="material-card reveal reveal-delay-2">
+        <span class="material-number">05</span>
+        <div class="material-icon">♻️</div>
+        <div class="material-name">Biodegradable</div>
+        <p class="material-desc">Every raw material returns to nature. 100% natural inputs ensure full biodegradability within natural processes — beauty with zero footprint.</p>
+      </div>
+      <div class="material-card reveal reveal-delay-3">
+        <span class="material-number">06</span>
+        <div class="material-icon">🇮🇹</div>
+        <div class="material-name">Made in Italy</div>
+        <p class="material-desc">Our Venetian factory is equipped with the most advanced technology. Every mattress is handmade exclusively in Italy — craftsmanship valued throughout the world.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- PRODUCTS SECTION -->
+<section id="products">
+  <div class="section-inner">
+    <div class="products-header reveal">
+      <span class="section-label">Our Collections</span>
+      <h2 class="section-headline">Three Paths to Perfect Sleep</h2>
+    </div>
+  </div>
+
+  <!-- Royal Mattress -->
+  <div class="product-feature reveal">
+    <div class="product-visual">
+      <div class="product-visual-inner">
+        <div class="product-glow glow-royal" style="top:50%;left:50%;transform:translate(-50%,-50%)"></div>
+        <div class="mattress-3d royal-mattress">
+          <div class="mattress-side"></div>
+          <div class="layer layer-top"></div>
+          <div class="layer layer-2"></div>
+          <div class="layer layer-3"></div>
+          <div class="layer layer-spring"></div>
+          <div class="layer layer-bottom"></div>
+        </div>
+      </div>
+    </div>
+    <div class="product-info">
+      <div class="product-tier">Signature Collection · 01</div>
+      <div class="product-name">Royal</div>
+      <div class="product-subtitle">Sleep Like a Queen</div>
+      <p class="product-desc">The Royal features a rich layer of natural components offering unique comfort. Its fabulous woven Damask cover is soft and smooth, ensuring a pleasant and cozy atmosphere. The natural wool and latex layer adds to the feeling of sleeping close to nature.</p>
+      <div class="product-cert">✦ OEKOTEX &amp; CERTIPUR Certified · Medium Firm</div>
+      <div class="product-layers-list">
+        <span class="layer-tag">Damask Fabric</span>
+        <span class="layer-tag">Horse Hair</span>
+        <span class="layer-tag">Natural Latex</span>
+        <span class="layer-tag">Wool Wadding</span>
+        <span class="layer-tag">7-Zone Springs</span>
+        <span class="layer-tag">Cotton</span>
+      </div>
+      <a href="#contact" class="product-cta">Request Information</a>
+    </div>
+  </div>
+
+  <!-- Diamond Mattress -->
+  <div class="product-feature reveal">
+    <div class="product-visual">
+      <div class="product-visual-inner">
+        <div class="product-glow glow-diamond" style="top:50%;left:50%;transform:translate(-50%,-50%)"></div>
+        <div class="mattress-3d diamond-mattress">
+          <div class="mattress-side"></div>
+          <div class="layer layer-top"></div>
+          <div class="layer layer-silk"></div>
+          <div class="layer layer-wool"></div>
+          <div class="layer layer-spring"></div>
+          <div class="layer layer-bottom"></div>
+        </div>
+      </div>
+    </div>
+    <div class="product-info">
+      <div class="product-tier">Signature Collection · 02</div>
+      <div class="product-name">Diamond</div>
+      <div class="product-subtitle">Today and Tomorrow</div>
+      <p class="product-desc">Generous layers of natural, hypoallergenic fillings — natural wool and silk — create a fresh, breathable, temperature-regulating sleeping surface. With natural and antimicrobial properties, the Diamond is the perfect choice for allergy sufferers.</p>
+      <div class="product-cert">✦ OEKOTEX &amp; CERTIPUR Certified · Medium Firm</div>
+      <div class="product-layers-list">
+        <span class="layer-tag">Knitted Fabric</span>
+        <span class="layer-tag">Silk Wadding</span>
+        <span class="layer-tag">Comfort Foam</span>
+        <span class="layer-tag">Wool Wadding</span>
+        <span class="layer-tag">Pocket Springs</span>
+        <span class="layer-tag">Damask Fabric</span>
+      </div>
+      <a href="#contact" class="product-cta">Request Information</a>
+    </div>
+  </div>
+
+  <!-- Ottoman Mattress -->
+  <div class="product-feature reveal">
+    <div class="product-visual">
+      <div class="product-visual-inner">
+        <div class="product-glow glow-ottoman" style="top:50%;left:50%;transform:translate(-50%,-50%)"></div>
+        <div class="mattress-3d ottoman-mattress">
+          <div class="mattress-side"></div>
+          <div class="layer layer-top"></div>
+          <div class="layer layer-horsehair"></div>
+          <div class="layer layer-latex"></div>
+          <div class="layer layer-spring"></div>
+          <div class="layer layer-bottom"></div>
+        </div>
+      </div>
+    </div>
+    <div class="product-info">
+      <div class="product-tier">Flagship Collection · 03</div>
+      <div class="product-name">Ottoman</div>
+      <div class="product-subtitle">Ultra Comfortable</div>
+      <p class="product-desc">The pinnacle of Lunaflex craftsmanship. Every detail perfected by specialized experts. Pure horsehair, natural cotton, natural wool, latex, and linen — combined with our expertise to present mattresses that exude absolute luxury. Your dream, made real.</p>
+      <div class="product-cert">✦ OEKOTEX &amp; CERTIPUR Certified · Medium Firm</div>
+      <div class="product-layers-list">
+        <span class="layer-tag">Knitted Fabric</span>
+        <span class="layer-tag">Horse Hair</span>
+        <span class="layer-tag">Natural Latex</span>
+        <span class="layer-tag">Cotton Wadding</span>
+        <span class="layer-tag">Wool Wadding</span>
+        <span class="layer-tag">Pocket Springs</span>
+      </div>
+      <a href="#contact" class="product-cta">Request Information</a>
+    </div>
+  </div>
+</section>
+
+<!-- CRAFTSMANSHIP QUOTE -->
+<section id="craftsmanship">
+  <div class="section-inner" style="position:relative;z-index:1">
+    <div class="reveal">
+      <blockquote class="quote-text">
+        "LunaFlex combines the latest scientific developments and high quality materials — giving a unique feeling of weightlessness. Everything you need for good sleep."
+      </blockquote>
+      <div class="quote-attr">— Lunaflex Manifesto</div>
+      <div class="made-in-italy" style="margin-top:64px">
+        <div class="italy-flag">
+          <span class="green"></span>
+          <span class="white"></span>
+          <span class="red"></span>
+        </div>
+        <span class="italy-label">Handmade exclusively in Italy · Venetian Atelier</span>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- BLOG / JOURNAL SECTION -->
+<section id="blog">
+  <div class="section-inner">
+    <div class="blog-header reveal">
+      <div>
+        <span class="section-label">Sleep Journal</span>
+        <h2 class="section-headline">From the Atelier</h2>
+      </div>
+      <a href="#" class="view-all-link">View All Articles</a>
+    </div>
+    <div class="blog-grid">
+      <div class="blog-card reveal">
+        <div class="blog-card-img">
+          <div class="blog-card-img-inner bg1" style="height:100%;display:flex;align-items:center;justify-content:center;position:relative;">
+            <svg width="120" height="80" viewBox="0 0 120 80" fill="none" style="opacity:0.2">
+              <rect x="10" y="40" width="100" height="30" rx="4" fill="#c9a96e"/>
+              <rect x="15" y="20" width="90" height="25" rx="2" fill="#a8b4c0"/>
+              <rect x="20" y="10" width="80" height="15" rx="2" fill="#8898a8"/>
+            </svg>
+          </div>
+          <span class="blog-cat">Sleep Science</span>
+        </div>
+        <div class="blog-card-body">
+          <div class="blog-date">May 2025</div>
+          <h3 class="blog-title">Why Natural Materials Are the Future of Luxury Sleep</h3>
+          <p class="blog-excerpt">From horsehair to natural latex, we explore why centuries-old materials still outperform synthetic alternatives in comfort, longevity, and environmental responsibility.</p>
+        </div>
+      </div>
+      <div class="blog-card reveal reveal-delay-1">
+        <div class="blog-card-img">
+          <div class="blog-card-img-inner bg2" style="height:100%;display:flex;align-items:center;justify-content:center;position:relative;">
+            <svg width="80" height="80" viewBox="0 0 80 80" fill="none" style="opacity:0.2">
+              <circle cx="40" cy="40" r="30" stroke="#c9a96e" stroke-width="1"/>
+              <circle cx="40" cy="40" r="20" stroke="#c9a96e" stroke-width="0.5"/>
+              <circle cx="40" cy="40" r="10" fill="#c9a96e" opacity="0.3"/>
+            </svg>
+          </div>
+          <span class="blog-cat">Craftsmanship</span>
+        </div>
+        <div class="blog-card-body">
+          <div class="blog-date">April 2025</div>
+          <h3 class="blog-title">The Art of Hand-Tufting: Italy's Finest Tradition</h3>
+          <p class="blog-excerpt">Inside the Venetian atelier where each Ottoman mattress is hand-finished by master craftspeople.</p>
+        </div>
+      </div>
+      <div class="blog-card reveal reveal-delay-2">
+        <div class="blog-card-img">
+          <div class="blog-card-img-inner bg3" style="height:100%;display:flex;align-items:center;justify-content:center;position:relative;">
+            <svg width="80" height="80" viewBox="0 0 80 80" fill="none" style="opacity:0.2">
+              <path d="M10 60 Q20 20 40 30 Q60 40 70 20" stroke="#a8c49e" stroke-width="1.5" fill="none"/>
+              <path d="M10 70 Q30 40 50 50 Q65 55 70 35" stroke="#c9a96e" stroke-width="1" fill="none"/>
+            </svg>
+          </div>
+          <span class="blog-cat">Sustainability</span>
+        </div>
+        <div class="blog-card-body">
+          <div class="blog-date">March 2025</div>
+          <h3 class="blog-title">Sleeping Green: Biodegradability and the Conscious Bedroom</h3>
+          <p class="blog-excerpt">How 100% natural, biodegradable materials protect the environment without sacrificing a single moment of comfort.</p>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- CONTACT SECTION -->
+<section id="contact">
+  <div class="section-inner">
+    <div class="contact-grid">
+      <div class="contact-left reveal">
+        <span class="section-label">Get in Touch</span>
+        <h2 class="section-headline" style="font-family:'Cormorant Garamond',serif;font-size:52px;font-weight:300;color:var(--pearl);margin-bottom:24px">Begin Your<br><em style="color:var(--gold-light)">Sleep Journey</em></h2>
+        <p>Whether you're furnishing a single bedroom or specifying for a luxury hospitality project, our consultants are here to guide you to the perfect Lunaflex collection.</p>
+        <div class="contact-detail">
+          <div class="contact-detail-label">Address</div>
+          <div class="contact-detail-value">c/o Venetian Atelier SRL<br>Via Fiorolle 2 – 36060<br>Romano d'Ezzelino VI, Italy</div>
+        </div>
+        <div class="contact-detail">
+          <div class="contact-detail-label">Phone</div>
+          <div class="contact-detail-value">+39 347.4479296<br>+39 328.8221306</div>
+        </div>
+        <div class="contact-detail">
+          <div class="contact-detail-label">Follow Us</div>
+          <div class="contact-detail-value">@venetian enrico</div>
+        </div>
+        <div class="contact-detail">
+          <div class="contact-detail-label">Website</div>
+          <div class="contact-detail-value">www.venetianenrico.com</div>
+        </div>
+      </div>
+      <div class="reveal reveal-delay-2">
+        <form class="contact-form" onsubmit="return false;">
+          <div class="form-field">
+            <input type="text" id="name" placeholder=" ">
+            <label for="name">Full Name</label>
+          </div>
+          <div class="form-field">
+            <input type="email" id="email" placeholder=" ">
+            <label for="email">Email Address</label>
+          </div>
+          <div class="form-field">
+            <select id="product">
+              <option value="" disabled selected></option>
+              <option value="royal">Royal Mattress</option>
+              <option value="diamond">Diamond Mattress</option>
+              <option value="ottoman">Ottoman Mattress</option>
+              <option value="consultation">General Consultation</option>
+            </select>
+            <label for="product" style="top:-10px;font-size:9px;color:var(--gold)">Collection Interest</label>
+          </div>
+          <div class="form-field">
+            <textarea id="message" placeholder=" "></textarea>
+            <label for="message">Your Message</label>
+          </div>
+          <button type="submit" class="submit-btn">Send Message</button>
+        </form>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- FOOTER -->
+<footer>
+  <div class="footer-grid">
+    <div class="footer-brand">
+      <div style="display:flex;align-items:center;gap:12px">
+        <svg width="32" height="32" viewBox="0 0 100 100" fill="none">
+          <g opacity="0.85">
+            <ellipse cx="50" cy="24" rx="5" ry="13" fill="#c9a96e" opacity="0.8"/>
+            <ellipse cx="50" cy="24" rx="5" ry="13" fill="#c9a96e" opacity="0.8" transform="rotate(30 50 50)"/>
+            <ellipse cx="50" cy="24" rx="5" ry="13" fill="#c9a96e" opacity="0.8" transform="rotate(60 50 50)"/>
+            <ellipse cx="50" cy="24" rx="5" ry="13" fill="#c9a96e" opacity="0.8" transform="rotate(90 50 50)"/>
+            <ellipse cx="50" cy="24" rx="5" ry="13" fill="#c9a96e" opacity="0.8" transform="rotate(120 50 50)"/>
+            <ellipse cx="50" cy="24" rx="5" ry="13" fill="#c9a96e" opacity="0.8" transform="rotate(150 50 50)"/>
+            <ellipse cx="50" cy="24" rx="5" ry="13" fill="#c9a96e" opacity="0.8" transform="rotate(180 50 50)"/>
+            <ellipse cx="50" cy="24" rx="5" ry="13" fill="#c9a96e" opacity="0.8" transform="rotate(210 50 50)"/>
+            <ellipse cx="50" cy="24" rx="5" ry="13" fill="#c9a96e" opacity="0.8" transform="rotate(240 50 50)"/>
+            <ellipse cx="50" cy="24" rx="5" ry="13" fill="#c9a96e" opacity="0.8" transform="rotate(270 50 50)"/>
+            <ellipse cx="50" cy="24" rx="5" ry="13" fill="#c9a96e" opacity="0.8" transform="rotate(300 50 50)"/>
+            <ellipse cx="50" cy="24" rx="5" ry="13" fill="#c9a96e" opacity="0.8" transform="rotate(330 50 50)"/>
+          </g>
+          <circle cx="50" cy="50" r="9" fill="#c9a96e"/>
+        </svg>
+        <div>
+          <div style="font-family:'Cormorant Garamond',serif;font-size:20px;color:var(--pearl);letter-spacing:0.12em">Lunaflex</div>
+          <div style="font-size:8px;letter-spacing:0.5em;color:var(--gold);text-transform:uppercase">Luxury Dreams</div>
+        </div>
+      </div>
+      <p>Where Italian artisanship meets the science of perfect sleep. Every detail has a function. Every night, a dream.</p>
+      <!-- Italian flag -->
+      <div style="display:flex;gap:0;margin-top:20px;border-radius:2px;overflow:hidden;width:40px;height:3px;">
+        <div style="flex:1;background:#009246"></div>
+        <div style="flex:1;background:#ffffff"></div>
+        <div style="flex:1;background:#ce2b37"></div>
+      </div>
+      <div style="font-size:9px;letter-spacing:0.35em;color:var(--silver);margin-top:6px;text-transform:uppercase;opacity:0.6">Made in Italy</div>
+    </div>
+    <div>
+      <div class="footer-col-title">Collections</div>
+      <ul class="footer-links">
+        <li><a href="#products">Royal Mattress</a></li>
+        <li><a href="#products">Diamond Mattress</a></li>
+        <li><a href="#products">Ottoman Mattress</a></li>
+        <li><a href="#contact">Bespoke</a></li>
+      </ul>
+    </div>
+    <div>
+      <div class="footer-col-title">Company</div>
+      <ul class="footer-links">
+        <li><a href="#about">About Lunaflex</a></li>
+        <li><a href="#materials">Materials</a></li>
+        <li><a href="#craftsmanship">Made in Italy</a></li>
+        <li><a href="#blog">Sleep Journal</a></li>
+      </ul>
+    </div>
+    <div>
+      <div class="footer-col-title">Contact</div>
+      <ul class="footer-links">
+        <li><a href="#contact">Consultation</a></li>
+        <li><a href="tel:+393474479296">+39 347.4479296</a></li>
+        <li><a href="#">venetian enrico</a></li>
+        <li><a href="http://www.venetianenrico.com">venetianenrico.com</a></li>
+      </ul>
+    </div>
+  </div>
+  <div class="footer-bottom">
+    <p>© 2025 Lunaflex · Venetian Atelier SRL · Via Fiorolle 2, Romano d'Ezzelino VI, Italy</p>
+    <div class="social-links">
+      <a href="#">Instagram</a>
+      <a href="#">LinkedIn</a>
+      <a href="#">YouTube</a>
+      <a href="#">Pinterest</a>
+    </div>
+  </div>
+</footer>
+
+<script>
+// ─── CURSOR ───
+const dot = document.getElementById('cursor-dot');
+const ring = document.getElementById('cursor-ring');
+let mx = 0, my = 0, rx = 0, ry = 0;
+
+document.addEventListener('mousemove', e => {
+  mx = e.clientX; my = e.clientY;
+  dot.style.left = mx + 'px';
+  dot.style.top = my + 'px';
+});
+function animateCursor() {
+  rx += (mx - rx) * 0.12;
+  ry += (my - ry) * 0.12;
+  ring.style.left = rx + 'px';
+  ring.style.top = ry + 'px';
+  requestAnimationFrame(animateCursor);
+}
+animateCursor();
+
+// ─── NAVBAR SCROLL ───
+const navbar = document.getElementById('navbar');
+window.addEventListener('scroll', () => {
+  if (window.scrollY > 80) navbar.classList.add('scrolled');
+  else navbar.classList.remove('scrolled');
+  
+  // Progress bar
+  const maxScroll = document.body.scrollHeight - window.innerHeight;
+  document.getElementById('progress-bar').style.width = (window.scrollY / maxScroll * 100) + '%';
+});
+
+// ─── LOADER + VIDEO FRAME EXTRACTION ───
+const loader = document.getElementById('loader');
+const loaderBar = document.getElementById('loader-bar');
+const loaderText = document.getElementById('loader-text');
+const canvas = document.getElementById('hero-canvas');
+const ctx = canvas.getContext('2d');
+
+// Match canvas to window
+function resizeCanvas() {
+  canvas.width = window.innerWidth;
+  canvas.height = window.innerHeight;
+}
+resizeCanvas();
+window.addEventListener('resize', resizeCanvas);
+
+let frames = [];
+let totalFrames = 120; // target frame count
+
+function attemptVideoLoad() {
+  const possibleNames = [
+    'Lunaflex2.mp4','Lunaflex_2.mp4','Lunaflex 2.mp4',
+    'lunaflex2.mp4','lunaflex_2.mp4','lunaflex 2.mp4',
+    'Lunaflex2.MP4','LunaFlex2.mp4','video.mp4'
+  ];
+  let idx = 0;
+  function tryNext() {
+    if (idx >= possibleNames.length) { useFallbackHero(); return; }
+    const testVideo = document.createElement('video');
+    testVideo.src = possibleNames[idx];
+    testVideo.muted = true; testVideo.playsInline = true; testVideo.preload = 'metadata';
+    const timeout = setTimeout(() => { idx++; tryNext(); }, 4000);
+    testVideo.addEventListener('loadedmetadata', () => {
+      clearTimeout(timeout);
+      loaderText.textContent = 'Video found! Preparing frames...';
+      startFrameExtraction(testVideo);
+    });
+    testVideo.addEventListener('error', () => { clearTimeout(timeout); idx++; tryNext(); });
+    testVideo.load();
+  }
+  tryNext();
+}
+
+function startFrameExtraction(video) {
+  loaderText.textContent = 'Loading cinematic experience...';
+  const duration = video.duration;
+  const step = duration / totalFrames;
+  let framesLoaded = 0;
+  const offCanvas = document.createElement('canvas');
+  const offCtx = offCanvas.getContext('2d');
+  offCanvas.width = 1280;
+  offCanvas.height = 720;
+
+  function extractFrame(index) {
+    if (index >= totalFrames) {
+      loaderBar.style.width = '100%';
+      loaderText.textContent = 'Let the dream begin...';
+      setTimeout(() => {
+        loader.classList.add('hidden');
+        drawFrame(0);
+        startScrollLayers();
+      }, 600);
+      return;
+    }
+    video.currentTime = index * step;
+  }
+
+  video.addEventListener('seeked', () => {
+    offCtx.drawImage(video, 0, 0, offCanvas.width, offCanvas.height);
+    frames.push(offCanvas.toDataURL('image/webp', 0.7));
+    framesLoaded++;
+    loaderBar.style.width = (framesLoaded / totalFrames * 100) + '%';
+    loaderText.textContent = 'Preparing frame ' + framesLoaded + ' of ' + totalFrames + '...';
+    extractFrame(framesLoaded);
+  });
+
+  extractFrame(0);
+}
+
+function useFallbackHero() {
+  loaderBar.style.width = '100%';
+  loaderText.textContent = 'Initializing experience...';
+  setTimeout(() => {
+    loader.classList.add('hidden');
+    // Draw animated gradient on canvas
+    let t = 0;
+    function animateCanvas() {
+      resizeCanvas();
+      const w = canvas.width, h = canvas.height;
+      
+      // Dark gradient bg
+      const bg = ctx.createRadialGradient(w/2, h/2, 0, w/2, h/2, Math.max(w,h)*0.7);
+      bg.addColorStop(0, '#111820');
+      bg.addColorStop(0.5, '#0d1014');
+      bg.addColorStop(1, '#080a0c');
+      ctx.fillStyle = bg;
+      ctx.fillRect(0, 0, w, h);
+
+      // Animated shimmer particles
+      for (let i = 0; i < 60; i++) {
+        const x = (Math.sin(i * 2.3 + t * 0.002) * 0.5 + 0.5) * w;
+        const y = (Math.cos(i * 1.7 + t * 0.0015) * 0.5 + 0.5) * h;
+        const r = 1 + Math.sin(i + t * 0.003) * 0.8;
+        const alpha = 0.2 + Math.sin(i * 0.5 + t * 0.002) * 0.15;
+        ctx.beginPath();
+        ctx.arc(x, y, r, 0, Math.PI * 2);
+        ctx.fillStyle = `rgba(201,169,110,${alpha})`;
+        ctx.fill();
+      }
+
+      // Horizontal scan line
+      const scanY = (Math.sin(t * 0.001) * 0.5 + 0.5) * h;
+      const scanGrad = ctx.createLinearGradient(0, scanY - 80, 0, scanY + 80);
+      scanGrad.addColorStop(0, 'transparent');
+      scanGrad.addColorStop(0.5, 'rgba(201,169,110,0.04)');
+      scanGrad.addColorStop(1, 'transparent');
+      ctx.fillStyle = scanGrad;
+      ctx.fillRect(0, scanY - 80, w, 160);
+
+      // Center glow
+      const glow = ctx.createRadialGradient(w/2, h/2, 0, w/2, h/2, Math.min(w,h) * 0.4);
+      glow.addColorStop(0, 'rgba(40,55,80,0.3)');
+      glow.addColorStop(1, 'transparent');
+      ctx.fillStyle = glow;
+      ctx.fillRect(0, 0, w, h);
+
+      t++;
+      requestAnimationFrame(animateCanvas);
+    }
+    animateCanvas();
+    startScrollLayers();
+  }, 500);
+}
+
+function drawFrame(index) {
+  if (frames.length === 0) return;
+  const img = new Image();
+  img.onload = () => {
+    resizeCanvas();
+    const w = canvas.width, h = canvas.height;
+    const iw = img.width, ih = img.height;
+    const scale = Math.max(w/iw, h/ih);
+    const sw = iw * scale, sh = ih * scale;
+    const sx = (w - sw) / 2, sy = (h - sh) / 2;
+    ctx.drawImage(img, sx, sy, sw, sh);
+    
+    // Vignette
+    const vig = ctx.createRadialGradient(w/2,h/2,h*0.3,w/2,h/2,h*0.85);
+    vig.addColorStop(0,'transparent');
+    vig.addColorStop(1,'rgba(8,10,12,0.55)');
+    ctx.fillStyle = vig;
+    ctx.fillRect(0,0,w,h);
+  };
+  img.src = frames[Math.min(index, frames.length - 1)];
+}
+
+let currentFrame = 0;
+function handleHeroScroll() {
+  const section = document.getElementById('hero-section');
+  const rect = section.getBoundingClientRect();
+  const sectionHeight = section.offsetHeight - window.innerHeight;
+  const scrolled = -rect.top;
+  const progress = Math.max(0, Math.min(1, scrolled / sectionHeight));
+
+  // Frame playback
+  if (frames.length > 0) {
+    const targetFrame = Math.floor(progress * (frames.length - 1));
+    if (targetFrame !== currentFrame) {
+      currentFrame = targetFrame;
+      drawFrame(currentFrame);
+    }
+  }
+
+  // Text layers
+  const l1 = document.getElementById('layer-1');
+  const l2 = document.getElementById('layer-2');
+  const l3 = document.getElementById('layer-3');
+  const l4 = document.getElementById('layer-4');
+  const hint = document.getElementById('scroll-hint');
+
+  l1.classList.toggle('visible', progress < 0.22);
+  l2.classList.toggle('visible', progress >= 0.25 && progress < 0.52);
+  l3.classList.toggle('visible', progress >= 0.55 && progress < 0.78);
+  l4.classList.toggle('visible', progress >= 0.82);
+  hint.style.opacity = progress < 0.08 ? '1' : '0';
+}
+
+function startScrollLayers() {
+  window.addEventListener('scroll', handleHeroScroll, { passive: true });
+  handleHeroScroll();
+}
+
+// ─── REVEAL ON SCROLL ───
+const revealEls = document.querySelectorAll('.reveal');
+const revealObserver = new IntersectionObserver((entries) => {
+  entries.forEach(e => {
+    if (e.isIntersecting) e.target.classList.add('visible');
+  });
+}, { threshold: 0.12 });
+revealEls.forEach(el => revealObserver.observe(el));
+
+// ─── INIT ───
+// Show first text layer
+document.getElementById('layer-1').classList.add('visible');
+
+// Start loading
+attemptVideoLoad();
+</script>
+</body>
+</html>
